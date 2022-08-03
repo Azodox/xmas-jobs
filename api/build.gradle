@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow'
+}
+
+group parent.group
+version parent.version
+def moduleName = parent.name + '-' + name
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'net.kyori:adventure-text-minimessage:4.11.0'
+    compileOnly 'dev.morphia.morphia:morphia-core:2.2.7'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+}
