@@ -1,0 +1,6 @@
+rootProject.name = 'xmas-jobs'
+include 'api'
+include 'xmas-jobs-paper'
+include 'api'
+include 'paper'
+
