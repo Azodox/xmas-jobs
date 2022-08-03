@@ -1,0 +1,8 @@
+name: Jobs
+version: @version@
+api-version: 1.19
+authors:
+  - Azodox_
+main: fr.olten.jobs.JobPlugin
+softdepend:
+  - AccountSystem
