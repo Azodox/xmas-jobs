@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow'
+}
+
+group parent.group
+version parent.version
+def moduleName = parent.name.toLowerCase() + '-' + name
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+    maven { url 'https://repo.aikar.co/content/groups/aikar/' }
+}
+
+dependencies {
+    implementation 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+    implementation project(":api")
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
+    compileOnly 'io.github.azodox:accountsystem-api:0.6.5-SNAPSHOT'
+    compileOnly 'dev.morphia.morphia:morphia-core:2.2.7'
+}
+
+libsDirName = "D:\\Velocity\\xmas\\plugins"
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+}
+
+shadowJar {
+    archivesBaseName = moduleName
+    archiveClassifier.set('')
+}
