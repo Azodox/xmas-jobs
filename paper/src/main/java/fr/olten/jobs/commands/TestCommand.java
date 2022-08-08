@@ -1,29 +1,13 @@
 package fr.olten.jobs.commands;
 
-import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
-import fr.olten.jobs.Job;
-import fr.olten.jobs.JobPlugin;
-import fr.olten.jobs.database.power.JobPowerModel;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.valneas.account.AccountSystemApi;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-
 /**
  * @author Azodox_ (Luke)
  * 2/8/2022.
  */
 
-@CommandAlias("test")
-public class TestCommand extends BaseCommand {
+public class TestCommand{
 
-    private final JobPlugin jobPlugin;
+/*    private final JobPlugin jobPlugin;
     public TestCommand(JobPlugin jobPlugin) {
         this.jobPlugin = jobPlugin;
     }
@@ -77,6 +61,14 @@ public class TestCommand extends BaseCommand {
     @Subcommand("add power")
     public void addPower(Player player, int powerId){
         var model = new JobPowerModel(powerId, "Nullam a dui orci. Maecenas molestie, erat a dictum blandit, risus nulla", "Ut eget ipsum vel arcu blandit pretium sit amet nec mi. Pellentesque in erat");
-        //TODO : save power in the database
+        jobPlugin.getJobDatabaseManager().saveJobPower(model);
     }
+
+    @Subcommand("add block")
+    public void addBlock(Player player, double earnedJobXP, double earnedGeneralXP, double earnedFlc){
+        var targetBlock = player.getTargetBlock(30);
+        if(targetBlock != null){
+            jobPlugin.getJobDatabaseManager().saveBlockXP(new MinedBlockXP(targetBlock.getType().getKey().asString(), earnedJobXP, earnedGeneralXP, earnedFlc));
+        }
+    }*/
 }
