@@ -4,6 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 import lombok.Getter;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 
 /**
@@ -20,7 +21,7 @@ public class JobProgression {
     private @Getter
     final int jobId;
     @Property
-    private @Getter final double xp;
+    private @Getter @Setter double xp;
 
     public JobProgression(int jobId, double xp) {
         this.jobId = jobId;
