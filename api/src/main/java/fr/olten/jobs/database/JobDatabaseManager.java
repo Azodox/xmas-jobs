@@ -3,6 +3,7 @@ package fr.olten.jobs.database;
 import com.mongodb.client.result.UpdateResult;
 import dev.morphia.query.Query;
 import fr.olten.jobs.Job;
+import fr.olten.jobs.database.mining.MinedBlockXP;
 import fr.olten.jobs.database.power.JobPowerModel;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,9 @@ public interface JobDatabaseManager {
     Query<? extends JobDatabaseModel> queryPlayerJob(@NotNull UUID uuid, @NotNull Job job);
 
     Query<JobPowerModel> queryJobPower(int powerId);
+    void saveJobPower(JobPowerModel jobPower);
+    void saveBlockXP(MinedBlockXP blockXP);
+    MinedBlockXP getMinedBlockXP(String minecraftTag);
 
     /**
      * Change a player's current job. You can't put a null value on the second parameter
