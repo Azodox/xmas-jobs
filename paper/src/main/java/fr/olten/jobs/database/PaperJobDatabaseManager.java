@@ -6,6 +6,7 @@ import dev.morphia.query.Query;
 import dev.morphia.query.experimental.filters.Filters;
 import dev.morphia.query.experimental.updates.UpdateOperators;
 import fr.olten.jobs.Job;
+import fr.olten.jobs.database.mining.MinedBlockXP;
 import fr.olten.jobs.database.power.JobPowerModel;
 import fr.olten.jobs.database.progression.JobProgression;
 import fr.olten.jobs.database.progression.JobProgressionModel;
@@ -53,6 +54,21 @@ public class PaperJobDatabaseManager implements JobDatabaseManager {
     }
 
     @Override
+    public void saveJobPower(JobPowerModel jobPower) {
+        this.datastore.save(jobPower);
+    }
+
+    @Override
+    public void saveBlockXP(MinedBlockXP blockXP) {
+        this.datastore.save(blockXP);
+    }
+
+    @Override
+    public MinedBlockXP getMinedBlockXP(String minecraftTag) {
+        return datastore.find(MinedBlockXP.class).filter(Filters.eq("minecraftTag", minecraftTag)).first();
+    }
+
+    @Override
     public UpdateResult setJob(@NotNull UUID uuid, @NotNull Job job) {
         var provider = Bukkit.getServicesManager().getRegistration(AccountSystemApi.class);
         if(provider != null){
@@ -73,13 +89,23 @@ public class PaperJobDatabaseManager implements JobDatabaseManager {
         }
 
         var jobProgressionModel = query.first();
-        if (jobProgressionModel != null && jobProgressionModel.getJobProgressionList().stream().noneMatch(jobProgression -> jobProgression.getJobId() == job.getId())) {
+
+        if(jobProgressionModel == null){
+            return UpdateResult.unacknowledged();
+        }
+
+        if (jobProgressionModel.getJobProgressionList().stream().noneMatch(jobProgression -> jobProgression.getJobId() == job.getId())) {
             return query
                     .update(UpdateOperators.addToSet("jobProgressionList", new JobProgression(job.getId(), xp))).execute();
         }
 
-        return query
-                .filter(Filters.eq("jobProgressionList.jobId", job.getId()))
-                .update(UpdateOperators.inc("jobProgressionList.xp", xp)).execute();
+        jobProgressionModel.getJobProgressionList().forEach(jobProgression -> {
+            if(jobProgression.getJobId() == job.getId()){
+                jobProgression.setXp(jobProgression.getXp() + xp);
+            }
+        });
+
+        datastore.merge(jobProgressionModel);
+        return UpdateResult.acknowledged(1, 1L, null);
     }
 }
