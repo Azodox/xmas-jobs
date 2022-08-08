@@ -3,6 +3,7 @@ plugins {
     id 'java-library'
     id 'idea'
     id 'com.github.johnrengelman.shadow'
+    id 'maven-publish'
 }
 
 group parent.group
@@ -17,7 +18,18 @@ repositories {
 
 dependencies {
     compileOnly 'net.kyori:adventure-text-minimessage:4.11.0'
-    compileOnly 'dev.morphia.morphia:morphia-core:2.2.7'
+    shadow 'dev.morphia.morphia:morphia-core:2.2.7'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     compileOnly 'org.projectlombok:lombok:1.18.24'
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            groupId = 'fr.olten'
+            artifactId = moduleName
+            version = version /*+ '-SNAPSHOT'*/
+            project.shadow.component(publication)
+        }
+    }
 }
