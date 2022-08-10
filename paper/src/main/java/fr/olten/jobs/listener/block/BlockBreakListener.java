@@ -58,23 +58,8 @@ public class BlockBreakListener implements Listener {
             jedis.hset("player#" + player.getUniqueId(), "job#" + Job.MINER.getId() + "#xpEarned", String.valueOf(minedBlockXP.getEarnedJobXP()));
         }
 
-        var globalEarned = jedis.hget("player#" + player.getUniqueId(), "global#xpEarned");
-        if(globalEarned != null){
-            jedis.hset("player#" + player.getUniqueId(), "global#xpEarned", String.valueOf(
-                    Double.parseDouble(globalEarned) + minedBlockXP.getEarnedGeneralXP()
-            ));
-        }else{
-            jedis.hset("player#" + player.getUniqueId(), "global#xpEarned", String.valueOf(minedBlockXP.getEarnedGeneralXP()));
-        }
-
-        var flcEarned = jedis.hget("player#" + player.getUniqueId(), "global#flcEarned");
-        if(flcEarned != null) {
-            jedis.hset("player#" + player.getUniqueId(), "global#flcEarned", String.valueOf(
-                    Double.parseDouble(flcEarned) + minedBlockXP.getEarnedFlc()
-            ));
-        } else {
-            jedis.hset("player#" + player.getUniqueId(), "global#flcEarned", String.valueOf(minedBlockXP.getEarnedFlc()));
-        }
+        jedis.hincrByFloat("account#" + player.getUniqueId(), "xp", minedBlockXP.getEarnedGeneralXP());
+        jedis.hincrByFloat("account#" + player.getUniqueId(), "money", minedBlockXP.getEarnedFlc());
 
         jedis.close();
 
