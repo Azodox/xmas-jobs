@@ -1,9 +1,7 @@
 package fr.olten.jobs.database;
 
-import dev.morphia.query.experimental.updates.UpdateOperators;
 import fr.olten.jobs.Job;
 import fr.olten.jobs.JobPlugin;
-import net.valneas.account.AccountSystemApi;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,25 +20,6 @@ public class CacheSaver {
     public void save(Player player){
         var jedis = jobPlugin.getJedisPool().getResource();
 
-        var globalXpEarned = jedis.hget("player#" + player.getUniqueId(), "global#xpEarned");
-        var globalFlcEarned = jedis.hget("player#" + player.getUniqueId(), "global#flcEarned");
-
-        if(globalXpEarned == null || globalFlcEarned == null){
-            return;
-        }
-
-        jedis.hdel("player#" + player.getUniqueId(), "global#xpEarned");
-        jedis.hdel("player#" + player.getUniqueId(), "global#flcEarned");
-
-        var provider = jobPlugin.getServer().getServicesManager().getRegistration(AccountSystemApi.class);
-        if(provider != null){
-            var api = provider.getProvider();
-            var accountManager = api.getAccountManager(player);
-            var query = accountManager.getAccountQuery();
-            query.update(UpdateOperators.set("xp", Double.parseDouble(globalXpEarned))).execute();
-            query.update(UpdateOperators.set("money", Double.parseDouble(globalFlcEarned))).execute();
-        }
-
         for (Job job : Job.values()) {
             var xpEarned = jedis.hget("player#" + player.getUniqueId(), "job#" + job.getId() + "#xpEarned");
             jedis.hdel("player#" + player.getUniqueId(), "job#" + job.getId() + "#xpEarned");
@@ -50,7 +29,7 @@ public class CacheSaver {
             }
         }
 
-        jobPlugin.getLogger().info("Saved cache in db for " + player.getName());
+        jobPlugin.getLogger().info("Saved earned job xp in db for " + player.getName());
         jedis.close();
     }
 }
