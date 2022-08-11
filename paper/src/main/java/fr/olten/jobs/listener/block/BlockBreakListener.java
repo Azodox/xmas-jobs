@@ -48,26 +48,18 @@ public class BlockBreakListener implements Listener {
         if(minedBlockXP == null) return;
 
         var jedis = jobPlugin.getJedisPool().getResource();
-        var jobXpEarned = jedis.hget("player#" + player.getUniqueId(), "job#" + Job.MINER.getId() + "#xpEarned");
 
-        if(jobXpEarned != null){
-            jedis.hset("player#" + player.getUniqueId(), "job#" + Job.MINER.getId() + "#xpEarned", String.valueOf(
-                    Double.parseDouble(jobXpEarned) + minedBlockXP.getEarnedJobXP()
-            ));
-        }else{
-            jedis.hset("player#" + player.getUniqueId(), "job#" + Job.MINER.getId() + "#xpEarned", String.valueOf(minedBlockXP.getEarnedJobXP()));
-        }
-
-        jedis.hincrByFloat("account#" + player.getUniqueId(), "xp", minedBlockXP.getEarnedGeneralXP());
-        jedis.hincrByFloat("account#" + player.getUniqueId(), "money", minedBlockXP.getEarnedFlc());
+        jedis.hincrByFloat("player#" + player.getUniqueId(), "job#" + Job.MINER.getId() + "#xpEarned", minedBlockXP.getEarnedJobXP(1));
+        jedis.hincrByFloat("account#" + player.getUniqueId(), "xp", minedBlockXP.getEarnedGlobalXP(1));
+        jedis.hincrByFloat("account#" + player.getUniqueId(), "money", minedBlockXP.getEarnedFlc(1));
 
         jedis.close();
 
         if(!jobPlugin.getEarnedXPBars().containsKey(player.getUniqueId())){
             var bar = Bukkit.createBossBar(
-                    "+ " + minedBlockXP.getEarnedJobXP() + " XP pour le job de Mineur"
-                            + " + " + minedBlockXP.getEarnedGeneralXP() + " XP"
-                            + " + " + minedBlockXP.getEarnedFlc() + " Flc",
+                    "+ " + minedBlockXP.getEarnedJobXP(1) + " XP pour le job de Mineur"
+                            + " + " + minedBlockXP.getEarnedGlobalXP(1) + " XP"
+                            + " + " + minedBlockXP.getEarnedFlc(1) + " Flc",
                     BarColor.PURPLE, BarStyle.SOLID
             );
 
@@ -78,7 +70,7 @@ public class BlockBreakListener implements Listener {
         }else{
             var bossBar = jobPlugin.getEarnedXPBars().get(player.getUniqueId());
             var bar = bossBar.getBar();
-            double[] doubles = new double[] {minedBlockXP.getEarnedJobXP(), minedBlockXP.getEarnedGeneralXP(), minedBlockXP.getEarnedFlc()};
+            double[] doubles = new double[] {minedBlockXP.getEarnedJobXP(1), minedBlockXP.getEarnedGlobalXP(1), minedBlockXP.getEarnedFlc(1)};
 
             var title = bar.getTitle();
             var pattern = Pattern.compile("([0-9]+).([0-9]+)");
