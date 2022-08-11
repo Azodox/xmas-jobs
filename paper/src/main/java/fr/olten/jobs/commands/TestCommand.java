@@ -1,25 +1,43 @@
 package fr.olten.jobs.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
+import fr.olten.jobs.Job;
+import fr.olten.jobs.JobPlugin;
+import fr.olten.jobs.database.mining.MinedBlockXP;
+import fr.olten.jobs.database.power.JobPowerModel;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.valneas.account.AccountSystemApi;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+
 /**
  * @author Azodox_ (Luke)
  * 2/8/2022.
  */
 
-public class TestCommand{
+@CommandAlias("test")
+public class TestCommand extends BaseCommand {
 
-/*    private final JobPlugin jobPlugin;
+    private final JobPlugin jobPlugin;
     public TestCommand(JobPlugin jobPlugin) {
         this.jobPlugin = jobPlugin;
     }
 
     @Default
     public void onTest(Player player, int jobId){
-        player.sendMessage(Component.text(jobPlugin.getJobDatabaseManager().setJob(player.getUniqueId(), Job.getJob(jobId).orElseThrow()).getModifiedCount()));
+        player.sendMessage(Component.text(jobPlugin.getJobDatabaseManager().setJob(player.getUniqueId(), Job.getJob(jobId)).getModifiedCount()));
     }
 
     @Subcommand("add xp")
     public void onAddXp(Player player, int jobId, double xp){
-        if(Job.getJob(jobId).isEmpty()){
+        if(Job.getJob(jobId) == null){
             player.sendMessage(
                     Component.text("JOB").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
                     .append(Component.text(" » ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.BOLD))
@@ -28,7 +46,7 @@ public class TestCommand{
         }
 
         player.sendMessage(Component.text(jobPlugin.getJobDatabaseManager()
-                .incrementJobProgression(player.getUniqueId(), Job.getJob(jobId).orElseThrow(), xp).getModifiedCount()));
+                .incrementJobProgression(player.getUniqueId(), Job.getJob(jobId), xp).getModifiedCount()));
     }
 
     @Subcommand("get power")
@@ -42,8 +60,8 @@ public class TestCommand{
         var api = provider.getProvider();
         var accountManager = api.getAccountManager(player);
         var job = Job.getJob(accountManager.getAccount().getCurrentJobId());
-        if(job.isPresent()){
-            var playerJob = jobPlugin.getJobDatabaseManager().queryPlayerJob(player.getUniqueId(), job.get()).first();
+        if(job != null){
+            var playerJob = jobPlugin.getJobDatabaseManager().queryPlayerJob(player.getUniqueId(), job).first();
             if(playerJob == null){
                 System.out.println("Player job is null");
                 return;
@@ -68,7 +86,7 @@ public class TestCommand{
     public void addBlock(Player player, double earnedJobXP, double earnedGeneralXP, double earnedFlc){
         var targetBlock = player.getTargetBlock(30);
         if(targetBlock != null){
-            jobPlugin.getJobDatabaseManager().saveBlockXP(new MinedBlockXP(targetBlock.getType().getKey().asString(), earnedJobXP, earnedGeneralXP, earnedFlc));
+            jobPlugin.getJobDatabaseManager().saveBlockXP(new MinedBlockXP(targetBlock.getType().getKey().asString(), List.of(1.0f, 0.5f), earnedJobXP, earnedGeneralXP, earnedFlc));
         }
-    }*/
+    }
 }
