@@ -14,11 +14,11 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url 'https://papermc.io/repo/repository/maven-public/' }
-    //maven { url 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url 'https://repo.aikar.co/content/groups/aikar/' }
 }
 
 dependencies {
-    //implementation 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+    implementation 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
     implementation project(":api")
     implementation 'redis.clients:jedis:4.2.3'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'

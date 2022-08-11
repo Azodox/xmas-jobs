@@ -1,9 +1,11 @@
 package fr.olten.jobs;
 
+import co.aikar.commands.PaperCommandManager;
 import com.google.common.base.Preconditions;
 import fr.olten.jobs.bossbar.BossBarCheck;
 import fr.olten.jobs.bossbar.BossBarProgression;
 import fr.olten.jobs.bossbar.EarnedXPBossBar;
+import fr.olten.jobs.commands.TestCommand;
 import fr.olten.jobs.database.*;
 import fr.olten.jobs.database.task.CacheSaveTask;
 import fr.olten.jobs.listener.PlayerQuitListener;
@@ -56,8 +58,8 @@ public class JobPlugin extends JavaPlugin {
         getServer().getScheduler().runTaskTimer(this, new BossBarProgression(this), 0, 1);
         getServer().getScheduler().runTaskTimer(this, new CacheSaveTask(this), 0L, (long) 20 * 600);
 
-        /*var manager = new PaperCommandManager(this);
-        manager.registerCommand(new TestCommand(this));*/
+        var manager = new PaperCommandManager(this);
+        manager.registerCommand(new TestCommand(this));
 
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
