@@ -2,7 +2,8 @@ package fr.olten.jobs;
 
 import lombok.Getter;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Azodox_ (Luke)
@@ -19,18 +20,20 @@ public enum Job {
     ARTISAN(5),
     BUTCHER(6);
 
+    private static final Map<Integer, Job> BY_ID = new HashMap<>();
     private @Getter final int id;
+
+    static {
+        for (Job job : values()) {
+            BY_ID.put(job.id, job);
+        }
+    }
 
     Job(int id) {
         this.id = id;
     }
 
-    public static Optional<Job> getJob(int id){
-        for(Job job : Job.values()){
-            if(job.getId() == id){
-                return Optional.of(job);
-            }
-        }
-        return Optional.empty();
+    public static Job getJob(int id){
+        return BY_ID.get(id);
     }
 }
